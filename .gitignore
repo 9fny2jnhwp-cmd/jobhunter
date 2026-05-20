@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Build
+.next/
+out/
+dist/
+*.egg-info/
+
+# Uploads & data
+uploads/
+chroma_data/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma
+prisma/migrations/**/migration_lock.toml
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docker
+.docker/

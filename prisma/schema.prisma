@@ -1,0 +1,89 @@
+// Prisma schema mirrors SQLAlchemy models for Next.js data access
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ApplicationStatus {
+  draft
+  applied
+  interview
+  offer
+  rejected
+}
+
+model User {
+  id          String   @id @default(uuid()) @db.Uuid
+  email       String   @unique
+  fullName    String?  @map("full_name")
+  supabaseId  String?  @unique @map("supabase_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  resumes      Resume[]
+  applications Application[]
+
+  @@map("users")
+}
+
+model Resume {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @map("user_id") @db.Uuid
+  filename   String
+  filePath   String   @map("file_path")
+  mimeType   String   @map("mime_type")
+  parsedText String?  @map("parsed_text")
+  parsedJson Json?    @map("parsed_json")
+  isPrimary  Boolean  @default(false) @map("is_primary")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("resumes")
+}
+
+model Job {
+  id          String    @id @default(uuid()) @db.Uuid
+  externalId  String?   @unique @map("external_id")
+  title       String
+  company     String
+  location    String?
+  remote      Boolean   @default(true)
+  url         String?
+  description String?
+  salaryMin   Int?      @map("salary_min")
+  salaryMax   Int?      @map("salary_max")
+  matchScore  Int?      @map("match_score")
+  source      String?
+  postedAt    DateTime? @map("posted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  applications Application[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id          String            @id @default(uuid()) @db.Uuid
+  userId      String            @map("user_id") @db.Uuid
+  jobId       String            @map("job_id") @db.Uuid
+  resumeId    String?           @map("resume_id") @db.Uuid
+  status      ApplicationStatus @default(draft)
+  coverLetter String?           @map("cover_letter")
+  notes       String?
+  appliedAt   DateTime?         @map("applied_at")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+  job  Job  @relation(fields: [jobId], references: [id])
+
+  @@index([userId])
+  @@index([jobId])
+  @@map("applications")
+}

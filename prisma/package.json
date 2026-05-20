@@ -1,0 +1,13 @@
+{
+  "name": "jobhunter-prisma",
+  "private": true,
+  "scripts": {
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "studio": "prisma studio"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0",
+    "@prisma/client": "^5.22.0"
+  }
+}
