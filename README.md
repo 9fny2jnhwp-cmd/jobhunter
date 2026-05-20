@@ -99,11 +99,29 @@ POST /api/v1/ai/match-all?use_llm=true
 POST /api/v1/ai/match/{job_id}
 ```
 
+### Cover letters & resume tailoring
+
+On **Job Feed**, each role has **Cover letter**, **Tailor resume**, and **Full package** actions. Results are saved as draft applications.
+
+```bash
+POST /api/v1/ai/cover-letter/{job_id}
+POST /api/v1/ai/tailor-resume/{job_id}
+POST /api/v1/ai/application-package/{job_id}
+```
+
+Run migration after pull: `cd backend && alembic upgrade head`
+
+### Push to GitHub
+
+```powershell
+.\scripts\setup-github.ps1 -RepoUrl "https://github.com/YOUR_USER/jobhunter-ai.git"
+```
+
 ## Phase Roadmap
 
 | Phase | Features | Status |
 |-------|----------|--------|
 | 1 | Auth, Resume Upload, Parsing, Dashboard | Done |
-| 2 | Resume Tailoring, Cover Letter Gen, AI Matching | In progress |
+| 2 | Resume Tailoring, Cover Letter Gen, AI Matching | Done |
 | 3 | Auto-Apply Engine, Browser Automation | Planned |
 | 4 | Multi-Agent Orchestration, Analytics, Learning | Planned |

@@ -7,8 +7,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.deps import get_current_user
 from app.models import Job, User
-from app.schemas import JobMatchResult, MatchAllResponse
+from app.schemas import (
+    ApplicationPackageResult,
+    CoverLetterResult,
+    JobMatchResult,
+    MatchAllResponse,
+    TailoredResumeResult,
+)
 from app.services.matching_service import match_all_jobs_for_user, match_job_for_user
+from app.services.tailoring_service import (
+    generate_application_package,
+    generate_cover_letter_for_job,
+    tailor_resume_for_job,
+)
 
 router = APIRouter()
 
@@ -49,3 +60,40 @@ async def match_all_jobs(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
 
     return MatchAllResponse(matched=len(results), results=results)
+
+
+@router.post("/cover-letter/{job_id}", response_model=CoverLetterResult)
+async def create_cover_letter(
+    job_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        return await generate_cover_letter_for_job(db, current_user.id, job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+
+@router.post("/tailor-resume/{job_id}", response_model=TailoredResumeResult)
+async def create_tailored_resume(
+    job_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        return await tailor_resume_for_job(db, current_user.id, job_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+
+
+@router.post("/application-package/{job_id}", response_model=ApplicationPackageResult)
+async def create_application_package(
+    job_id: UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        result = await generate_application_package(db, current_user.id, job_id)
+        return ApplicationPackageResult(**result)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc

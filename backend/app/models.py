@@ -81,6 +81,7 @@ class Application(Base):
         Enum(ApplicationStatus), default=ApplicationStatus.DRAFT
     )
     cover_letter: Mapped[str | None] = mapped_column(Text, nullable=True)
+    tailored_resume: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     applied_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

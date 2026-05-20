@@ -97,3 +97,41 @@ class JobMatchResult(BaseModel):
 class MatchAllResponse(BaseModel):
     matched: int
     results: list[JobMatchResult]
+
+
+class CoverLetterResult(BaseModel):
+    job_id: UUID
+    cover_letter: str
+    application_id: UUID | None = None
+
+
+class TailoredResumeResult(BaseModel):
+    job_id: UUID
+    application_id: UUID | None = None
+    job_title: str
+    company: str
+    tailored_summary: str
+    bullet_highlights: list[str] = Field(default_factory=list)
+    skills_to_emphasize: list[str] = Field(default_factory=list)
+    original_filename: str = ""
+
+
+class ApplicationPackageResult(BaseModel):
+    application_id: UUID
+    job_id: UUID
+    cover_letter: str
+    tailored_resume: dict
+
+
+class ApplicationDetailResponse(BaseModel):
+    id: UUID
+    job_id: UUID
+    job_title: str
+    company: str
+    status: ApplicationStatus
+    cover_letter: str | None
+    tailored_resume: dict | None
+    applied_at: datetime | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}

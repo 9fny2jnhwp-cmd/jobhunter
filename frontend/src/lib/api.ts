@@ -89,3 +89,39 @@ export interface MatchAllResponse {
   matched: number;
   results: JobMatchResult[];
 }
+
+export interface CoverLetterResult {
+  job_id: string;
+  cover_letter: string;
+  application_id: string | null;
+}
+
+export interface TailoredResumeResult {
+  job_id: string;
+  application_id: string | null;
+  job_title: string;
+  company: string;
+  tailored_summary: string;
+  bullet_highlights: string[];
+  skills_to_emphasize: string[];
+  original_filename: string;
+}
+
+export interface ApplicationPackageResult {
+  application_id: string;
+  job_id: string;
+  cover_letter: string;
+  tailored_resume: TailoredResumeResult | Record<string, unknown>;
+}
+
+export interface ApplicationDetail {
+  id: string;
+  job_id: string;
+  job_title: string;
+  company: string;
+  status: string;
+  cover_letter: string | null;
+  tailored_resume: Record<string, unknown> | null;
+  applied_at: string | null;
+  created_at: string;
+}
